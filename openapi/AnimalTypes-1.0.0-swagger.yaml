@@ -1,0 +1,70 @@
+swagger: '2.0'
+info:
+  description: This is an API to access GDOS Animal Types and their children types
+  version: 1.0.0
+  title: GDOS Animal Types
+  # put the contact info for your development or API team
+  contact:
+    email: mark-donahue@idexx.com
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: animaltypes.endpoints.gdos-mdonahue-sb.cloud.goog
+schemes:
+  - https
+  - http
+paths:
+  /animalTypes:
+    get:
+      summary: Gets all Animal Group Types and their children 
+      operationId: animalGroupTypes
+      description: Retrieves all Animal Group Types
+      produces:
+      - application/json
+      responses:
+        200:
+          description: all of the Animals
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AnimalGroupType'
+definitions:
+    Animal:
+      type: object
+      required:
+        - code
+        - active
+        - createdDate
+      properties:
+        code:
+          type: string
+        active:
+          type: boolean
+        createdDate:
+          type: string
+          format: date-time
+        updatedDate:
+          type: string
+          format: date-time
+    AnimalGroupType:
+      allOf:
+        - $ref: '#/definitions/Animal'
+        - type: object
+          properties:
+            animalSubgroups:
+              type: array
+              items:
+                $ref: '#/definitions/AnimalGroup'
+    AnimalGroup:
+      allOf:
+        - $ref: '#/definitions/Animal'
+        - type: object
+          properties:
+            animalSubgroups:
+              type: array
+              items:
+                $ref: '#/definitions/AnimalSubgroup'
+    AnimalSubgroup:
+      allOf:
+        - $ref: '#/definitions/Animal'

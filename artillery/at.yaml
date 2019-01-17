@@ -1,0 +1,11 @@
+config:
+  target: http://35.192.66.58
+  phases:
+    - duration: 300
+      arrivalRate: 15
+  ensure:
+    maxErrorRate: 1
+scenarios:
+  - flow:
+      - get:
+          url: "/animalTypes"
