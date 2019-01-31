@@ -30,7 +30,7 @@ spec:
           args: [
             "--http_port=8081",
             "--backend=127.0.0.1:8080",
-            "--service=animaltypes.endpoints.gdos-mdonahue-sb.cloud.goog",
+            "--service=animaltypes.endpoints.gdos-mdonahue-sb.cloud.goog,specimentypes.endpoints.gdos-mdonahue-sb.cloud.goog",
             "--rollout_strategy=managed",
           ]
           # [END esp]

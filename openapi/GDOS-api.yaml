@@ -1,0 +1,347 @@
+swagger: '2.0'
+info:
+  description: GDOS API for Clouded Leopard
+  version: 1.0.0
+  title: GDOS LIMS API
+  # put the contact info for your development or API team
+  contact:
+    email: you@your-company.com
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: gdos-labs.endpoints.gdos-mdonahue-sb.cloud.goog
+schemes:
+  - https
+  - http
+paths:
+  /specimenTypes:
+    get:
+      summary: Gets all Specimen Types
+      operationId: specimenTypes
+      produces:
+        - application/json
+      responses:
+        200:
+          description: All available Specimen Types
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/SpecimenType'
+  /animalTypes:
+    get:
+      summary: Gets all Animal Group Types and their children
+      operationId: animalGroupTypes
+      description: Retrieves all Animal Group Types
+      produces:
+        - application/json
+      responses:
+        200:
+          description: all of the Animals
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AnimalGroupType'
+  /profiles:
+    get:
+      description: get some profiles
+      summary: get some profiles
+      operationId: ProfilesGet
+      produces:
+        - application/json
+      responses:
+        200:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Profile'
+  /panels:
+    get:
+      description: get some panels
+      summary: get some panels
+      operationId: PanelsGet
+      produces:
+        - application/json
+      responses:
+        200:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Panel'
+  /assays:
+    get:
+      description: get some assays
+      summary: get some assays
+      operationId: AssaysGet
+      produces:
+        - application/json
+      responses:
+        200:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Assay'
+definitions:
+  SpecimenType:
+    type: object
+    properties:
+      code:
+        type: string
+        example: BLOOD_SMEAR
+      active:
+        type: boolean
+      createdDate:
+        type: string
+        format: date-time
+      updatedDate:
+        type: string
+        format: date-time
+    Animal:
+      type: object
+      required:
+        - code
+        - active
+        - createdDate
+      properties:
+        code:
+          type: string
+        active:
+          type: boolean
+        createdDate:
+          type: string
+          format: date-time
+        updatedDate:
+          type: string
+          format: date-time
+    AnimalGroupType:
+      allOf:
+        - $ref: '#/definitions/Animal'
+        - type: object
+          properties:
+            animalSubgroups:
+              type: array
+              items:
+                $ref: '#/definitions/AnimalGroup'
+    AnimalGroup:
+      allOf:
+        - $ref: '#/definitions/Animal'
+        - type: object
+          properties:
+            animalSubgroups:
+              type: array
+              items:
+                $ref: '#/definitions/AnimalSubgroup'
+    AnimalSubgroup:
+      allOf:
+        - $ref: '#/definitions/Animal'
+  Recommendation:
+    title: Recommendation
+    type: object
+    properties:
+      recommendationType:
+        $ref: '#/definitions/RecommendationType'
+    required:
+      - recommendationType
+  CustomerMessageRecommendation:
+    title: CustomerMessageRecommendation
+    type: object
+    properties:
+      recommendationType:
+        $ref: '#/definitions/RecommendationType'
+      messageCode:
+        type: array
+        items:
+          type: string
+    required:
+      - recommendationType
+      - messageCode
+  SpecimenDefinition:
+    title: SpecimenDefinition
+    type: object
+    properties:
+      specimenTypeCode:
+        example: CITRATED_PLASMA
+        type: string
+      preferenceLevel:
+        $ref: '#/definitions/PreferenceLevel'
+      draw:
+        $ref: '#/definitions/Draw'
+      temperature:
+        $ref: '#/definitions/Temperature'
+  Test:
+    title: Test
+    type: object
+    properties:
+      code:
+        type: string
+      active:
+        type: boolean
+      createdDate:
+        type: string
+        format: date-time
+      updatedDate:
+        type: string
+        format: date-time
+    required:
+      - code
+      - active
+      - createdDate
+  Assay:
+    title: Assay
+    type: object
+    properties:
+      code:
+        type: string
+      active:
+        type: boolean
+      createdDate:
+        type: string
+        format: date-time
+      updatedDate:
+        type: string
+        format: date-time
+      specimenDefinitions:
+        type: array
+        items:
+          $ref: '#/definitions/SpecimenDefinition'
+      noAcceptableSpecimenRecommendations:
+        example:
+          - type: DO_NOT_RUN
+          - type: CUSTOMER_MESSAGE
+            messageCode:
+              - LKMS
+              - LKIM
+        type: array
+        items:
+          type: object
+        uniqueItems: true
+      animalRestrictions:
+        type: array
+        items:
+          type: string
+      wrongAnimalRecommendations:
+        example:
+          - type: DO_NOT_RUN
+          - type: CUSTOMER_MESSAGE
+            messageCode:
+              - LKFM
+              - LNIX
+        type: array
+        items:
+          type: object
+    required:
+      - code
+      - active
+      - createdDate
+  Panel:
+    title: Panel
+    type: object
+    properties:
+      code:
+        type: string
+      active:
+        type: boolean
+      createdDate:
+        type: string
+        format: date-time
+      updatedDate:
+        type: string
+        format: date-time
+      assays:
+        type: array
+        items:
+          $ref: '#/definitions/Assay'
+      specimenDefinitions:
+        type: array
+        items:
+          $ref: '#/definitions/SpecimenDefinition'
+      noAcceptableSpecimenRecommendations:
+        example:
+          - type: DO_NOT_RUN
+          - type: CUSTOMER_MESSAGE
+            messageCode:
+              - LKMS
+              - LNIX
+        type: array
+        items:
+          type: object
+        uniqueItems: true
+      animalRestrictions:
+        type: array
+        items:
+          type: string
+      wrongAnimalRecommendations:
+        example:
+          - type: DO_NOT_RUN
+          - type: CUSTOMER_MESSAGE
+            messageCode:
+              - LKFM
+              - LNIX
+        type: array
+        items:
+          type: object
+    required:
+      - code
+      - active
+      - createdDate
+  Profile:
+    title: Profile
+    type: object
+    properties:
+      code:
+        type: string
+      active:
+        type: boolean
+      createdDate:
+        type: string
+        format: date-time
+      updatedDate:
+        type: string
+        format: date-time
+      assays:
+        type: array
+        items:
+          $ref: '#/definitions/Assay'
+      panels:
+        type: array
+        items:
+          $ref: '#/definitions/Panel'
+    required:
+      - code
+      - active
+      - createdDate
+  Draw:
+    title: Draw
+    example: PRE
+    type: string
+    enum:
+      - PRE
+      - POST
+      - POST_2
+  PreferenceLevel:
+    title: PreferenceLevel
+    example: PREFERRED
+    type: string
+    enum:
+      - PREFERRED
+      - ACCEPTABLE
+      - LESS_ACCEPTABLE
+  RecommendationType:
+    title: RecommendationType
+    example: DO_NOT_RUN
+    type: string
+    enum:
+      - DO_NOT_RUN
+      - CUSTOMER_MESSAGE
+  Temperature:
+    title: Temperature
+    example: FROZEN
+    type: string
+    enum:
+      - FROZEN
+      - CHILLED
+      - PARTIALLY_THAWED
+      - ROOM_TEMPERATURE
